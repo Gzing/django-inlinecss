@@ -3,6 +3,7 @@ from django import template
 from django.utils.encoding import smart_unicode
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core.files.storage import default_storage as storage
 from django.conf import settings
 
 from django_inlinecss import conf
@@ -24,15 +25,15 @@ class InlineCssNode(template.Node):
                 path = smart_unicode(path)
             if settings.DEBUG:
                 expanded_path = finders.find(path)
+                with open(expanded_path) as css_file:
+                    css = ''.join((css, css_file.read()))
             else:
                 expanded_path = staticfiles_storage._normalize_name(path)
-
-            with storage.open(expanded_path) as css_file:
-                css = ''.join((css, css_file.read()))
+                with storage.open(expanded_path) as css_file:
+                    css = ''.join((css, css_file.read()))
 
         engine = conf.get_engine()(html=rendered_contents, css=css)
         return engine.render()
-
 
 
 @register.tag
