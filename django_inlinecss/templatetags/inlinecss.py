@@ -25,13 +25,14 @@ class InlineCssNode(template.Node):
             if settings.DEBUG:
                 expanded_path = finders.find(path)
             else:
-                expanded_path = staticfiles_storage.path(path)
+                expanded_path = staticfiles_storage._normalize_name(path)
 
-            with open(expanded_path) as css_file:
+            with storage.open(expanded_path) as css_file:
                 css = ''.join((css, css_file.read()))
 
         engine = conf.get_engine()(html=rendered_contents, css=css)
         return engine.render()
+
 
 
 @register.tag
