@@ -3,7 +3,6 @@ from django import template
 from django.utils.encoding import smart_unicode
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.files.storage import default_storage as storage
 from django.conf import settings
 
 from django_inlinecss import conf
@@ -28,8 +27,7 @@ class InlineCssNode(template.Node):
                 with open(expanded_path) as css_file:
                     css = ''.join((css, css_file.read()))
             else:
-                expanded_path = staticfiles_storage.location + '/' + path
-                with storage.open(expanded_path) as css_file:
+                with staticfiles_storage.open(path) as css_file:
                     css = ''.join((css, css_file.read()))
 
         engine = conf.get_engine()(html=rendered_contents, css=css)
