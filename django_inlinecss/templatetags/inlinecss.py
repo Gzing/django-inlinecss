@@ -28,7 +28,7 @@ class InlineCssNode(template.Node):
                 with open(expanded_path) as css_file:
                     css = ''.join((css, css_file.read()))
             else:
-                expanded_path = staticfiles_storage._normalize_name(path)
+                expanded_path = staticfiles_storage.location + '/' + path
                 with storage.open(expanded_path) as css_file:
                     css = ''.join((css, css_file.read()))
 
